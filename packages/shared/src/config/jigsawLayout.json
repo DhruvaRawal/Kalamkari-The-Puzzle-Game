@@ -1,0 +1,11 @@
+{
+  "$comment": "Edge types per cell, clockwise Top,Right,Bottom,Left. F=flat, T=tab (knob out), S=socket (notch in). Transcribed from the 'puzzle layout' sketch. Add more grids under keys like \"5x5\"; missing grids are generated.",
+  "layouts": {
+    "4x4": [
+      ["FSSF", "FTST", "FTSS", "FFSS"],
+      ["TSSF", "TTST", "TTTS", "TFTS"],
+      ["TSTF", "TSTT", "STTT", "SFTS"],
+      ["SSFF", "SSFT", "STFT", "SFFS"]
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "kalamkari",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": ["packages/shared", "packages/client", "packages/server"],
+  "scripts": {
+    "dev": "npm run dev -w @kalamkari/client",
+    "dev:server": "npm run dev -w @kalamkari/server",
+    "build": "npm run build -w @kalamkari/client",
+    "start": "npm run start -w @kalamkari/server",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p packages/shared && tsc -p packages/client && tsc -p packages/server"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
