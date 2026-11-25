@@ -65,7 +65,7 @@ npm test
 npm run typecheck
 ```
 
-`npm test` runs 74 Vitest tests:
+`npm test` runs 76 Vitest tests:
 
 * `jigsaw.test.ts`: the edge matrix (interior seams are tab↔socket, borders are flat, 4 of each
   archetype), generated layouts, and `buildPiecePath`.

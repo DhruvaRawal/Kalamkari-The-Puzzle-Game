@@ -61,5 +61,6 @@ opponents see how many pieces you've fixed.
 * No coins: you can still sell or pass.
 * Empty pool: Buy is disabled.
 * No unfixed pieces: Sell is disabled.
-* Timeouts: a turn auto-ends after 90 s (configurable). If you disconnect on your turn, you get
-  15 s. If you reconnect in time, your full clock comes back.
+* Timeouts: a turn auto-ends after 90 s (configurable). Your clock pauses while your sold piece
+  is up for auction, and picks up where it stopped when the turn comes back to you. If you
+  disconnect on your turn, you get 15 s. If you reconnect in time, your full clock comes back.

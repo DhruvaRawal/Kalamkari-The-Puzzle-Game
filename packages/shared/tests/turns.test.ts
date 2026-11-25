@@ -171,6 +171,38 @@ describe('sell and auction', () => {
     expect(current(bought)).not.toBe(me);
   });
 
+  it('pauses the turn clock for the auction and resumes it where it stopped', () => {
+    const base = newGame(2);
+    const timeout = base.config.turnTimeoutMs;
+    const { me, s } = sellFirst(base, T0 + 40_000); // 40 s of the turn already used
+    expect(s.turn.deadline).toBeNull();
+    expect(s.turn.pausedLeft).toBe(timeout - 40_000);
+    const closesAt = s.auction!.endsAt;
+    const t = act(s, { type: 'TICK', now: closesAt });
+    expect(current(t)).toBe(me);
+    expect(t.turn.deadline).toBe(closesAt + timeout - 40_000); // not a fresh full clock
+    expect(t.turn.pausedLeft).toBeNull();
+    // The remaining time runs out as usual.
+    expect(current(act(t, { type: 'TICK', now: t.turn.deadline! - 1 }))).toBe(me);
+    expect(current(act(t, { type: 'TICK', now: t.turn.deadline! }))).not.toBe(me);
+    // The next player starts with a full clock.
+    const next = act(t, { type: 'END_TURN', playerId: me, now: closesAt + 1000 });
+    expect(next.turn.deadline).toBe(closesAt + 1000 + timeout);
+  });
+
+  it('keeps a disconnected seller on the short clock after the auction, and restores on reconnect', () => {
+    const base = newGame(2);
+    const me = current(base);
+    const dc = act(base, { type: 'SET_CONNECTED', playerId: me, connected: false, now: T0 + 10_000 });
+    const { s } = sellFirst(dc, T0 + 12_000);
+    expect(s.turn.pausedLeft).toBe(base.config.turnTimeoutMs - 12_000); // measured from the full clock
+    const closesAt = s.auction!.endsAt;
+    const t = act(s, { type: 'TICK', now: closesAt });
+    expect(t.turn.deadline).toBe(closesAt + base.config.disconnectedTurnTimeoutMs);
+    const back = act(t, { type: 'SET_CONNECTED', playerId: me, connected: true, now: closesAt + 1000 });
+    expect(back.turn.deadline).toBe(closesAt + base.config.turnTimeoutMs - 12_000);
+  });
+
   it('with no bids the piece goes to the pool', () => {
     const { pieceId, s } = sellFirst(newGame(4));
     const t = act(s, { type: 'TICK', now: s.auction!.endsAt });

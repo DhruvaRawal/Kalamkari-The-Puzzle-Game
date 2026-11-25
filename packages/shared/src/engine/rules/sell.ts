@@ -3,7 +3,7 @@ import { parsePieceId, pieceClassAt } from '../../model/piece';
 import type { GameState, PieceClass, PieceId, PlayerId } from '../../model/types';
 import { gameError, type ErrorCode, type GameError } from '../errors';
 import { appendLog, findPlayer, takeFromHand, updatePlayer } from '../util';
-import { turnBlockReason, turnFacts, type TurnFacts } from './turn';
+import { pauseTurn, turnBlockReason, turnFacts, type TurnFacts } from './turn';
 
 export interface SellFacts extends TurnFacts {
   sold: boolean;
@@ -60,7 +60,7 @@ export function applySell(state: GameState, playerId: PlayerId, pieceId: PieceId
   s = {
     ...s,
     bank: { ...s.bank, coins: s.bank.coins - payout },
-    turn: { ...s.turn, sold: true, deadline: null }, // turn clock pauses during the auction
+    turn: pauseTurn({ ...s.turn, sold: true }, now), // turn clock pauses during the auction
     auction: {
       id: s.nextAuctionId,
       pieceId,

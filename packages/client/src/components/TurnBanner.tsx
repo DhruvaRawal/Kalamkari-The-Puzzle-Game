@@ -18,7 +18,9 @@ export function TurnBanner({ view, now, actions, sellMode, onBuy, onSell, onEndT
   const mine = view.turn.playerId === view.viewerId;
   const name = playerName(view, view.turn.playerId);
   const deadline = view.turn.deadline;
-  const remaining = deadline ? deadline - now : null;
+  const paused = deadline === null && view.auction !== null;
+  // Paused for the auction: show the time the clock will resume from.
+  const remaining = deadline !== null ? Math.max(0, deadline - now) : paused ? (view.turn.pausedLeft ?? null) : null;
   const { bought, sold } = view.turn;
 
   let status: string;
@@ -32,8 +34,12 @@ export function TurnBanner({ view, now, actions, sellMode, onBuy, onSell, onEndT
       <div class="turn-status" aria-live="polite">
         <strong>{status}</strong>
         {remaining !== null && view.phase === 'playing' && (
-          <span class={`turn-clock${remaining < 10_000 ? ' is-urgent' : ''}`} role="timer" aria-label={`${formatClock(remaining)} left in turn`}>
-            ⏱ {formatClock(remaining)}
+          <span
+            class={`turn-clock${paused ? ' is-paused' : remaining < 10_000 ? ' is-urgent' : ''}`}
+            role="timer"
+            aria-label={paused ? `Turn clock paused at ${formatClock(remaining)}` : `${formatClock(remaining)} left in turn`}
+          >
+            {paused ? '⏸' : '⏱'} {formatClock(remaining)}
           </span>
         )}
         {mine && view.phase === 'playing' && (

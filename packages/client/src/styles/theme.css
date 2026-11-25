@@ -235,6 +235,7 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 .turn-status strong { font-family: Georgia, serif; font-size: 1.2rem; }
 .turn-clock { font-variant-numeric: tabular-nums; font-weight: 700; }
 .turn-clock.is-urgent { color: #ffe08a; text-decoration: underline; }
+.turn-clock.is-paused { opacity: 0.8; }
 .turn-used { font-size: 0.85rem; opacity: 0.95; }
 .turn-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .turn-actions .btn { border-color: #fff; color: #fff; background: transparent; }

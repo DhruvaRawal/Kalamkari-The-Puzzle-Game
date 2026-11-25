@@ -15,10 +15,14 @@ export function PlayerPanel({ view, now }: { view: PlayerView; now: number }) {
           const isMe = p.id === view.viewerId;
           const leading = view.auction?.highBid?.playerId === p.id;
           const deadline = isTurn ? view.turn.deadline : null;
-          const remaining = deadline !== null ? Math.max(0, deadline - now) : null;
           const paused = isTurn && deadline === null;
-          const clock =
-            remaining !== null ? `${formatClock(remaining)} left in turn` : paused ? 'turn clock paused for the auction' : '';
+          // While paused for the auction, the ring holds the time that was left when the piece was sold.
+          const remaining = deadline !== null ? Math.max(0, deadline - now) : paused ? (view.turn.pausedLeft ?? null) : null;
+          const clock = paused
+            ? `turn clock paused for the auction${remaining !== null ? ` at ${formatClock(remaining)}` : ''}`
+            : remaining !== null
+              ? `${formatClock(remaining)} left in turn`
+              : '';
           return (
             <li class={`player${isTurn ? ' is-turn' : ''}${isMe ? ' is-me' : ''}`} aria-current={isTurn ? 'step' : undefined}>
               <span class="player-avatar" title={isTurn ? `${avatarName(p.avatar)} · ${clock}` : avatarName(p.avatar)}>
@@ -26,7 +30,7 @@ export function PlayerPanel({ view, now }: { view: PlayerView; now: number }) {
                   index={p.avatar}
                   timeLeft={isTurn ? (remaining !== null ? remaining / view.config.turnTimeoutMs : 1) : null}
                   paused={paused}
-                  urgent={remaining !== null && remaining < 10_000}
+                  urgent={!paused && remaining !== null && remaining < 10_000}
                 />
               </span>
               <div class="player-body">

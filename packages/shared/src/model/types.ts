@@ -75,6 +75,8 @@ export interface TurnState {
   deadline: number | null;
   /** The deadline before a disconnect shortened it; restored on reconnect. */
   restoreDeadline?: number | null;
+  /** Turn time left when the clock was paused for the player's auction; the clock resumes from it. */
+  pausedLeft?: number | null;
 }
 
 export type LogEntry =

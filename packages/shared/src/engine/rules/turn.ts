@@ -1,4 +1,4 @@
-import type { GameState, PlayerId } from '../../model/types';
+import type { GameState, PlayerId, TurnState } from '../../model/types';
 import { type ErrorCode } from '../errors';
 import { appendLog, findPlayer } from '../util';
 import { endGame, resolveStalemateWinners } from './win';
@@ -31,16 +31,35 @@ export function turnDeadline(state: GameState, playerId: PlayerId, now: number):
 export function startTurn(state: GameState, playerId: PlayerId, now: number): GameState {
   const next: GameState = {
     ...state,
-    turn: { playerId, number: state.turn.number + 1, bought: false, sold: false, deadline: turnDeadline(state, playerId, now), restoreDeadline: null },
+    turn: { playerId, number: state.turn.number + 1, bought: false, sold: false, deadline: turnDeadline(state, playerId, now), restoreDeadline: null, pausedLeft: null },
   };
   return appendLog(next, { kind: 'turn', at: now, playerId });
 }
 
-/** Restarts the active player's clock (e.g. when the turn comes back after their auction). */
-export const resumeTurn = (state: GameState, now: number): GameState => ({
-  ...state,
-  turn: { ...state.turn, deadline: turnDeadline(state, state.turn.playerId, now) },
-});
+/**
+ * Stops the turn clock (the player's auction is starting) and remembers how much time was left.
+ * A disconnect-shortened clock is measured from the full deadline, so a reconnect still restores it.
+ */
+export function pauseTurn(turn: TurnState, now: number): TurnState {
+  const full = turn.restoreDeadline ?? turn.deadline;
+  return { ...turn, deadline: null, restoreDeadline: null, pausedLeft: full === null ? null : Math.max(0, full - now) };
+}
+
+/** Restarts the active player's clock from where it was paused (the turn comes back after their auction). */
+export function resumeTurn(state: GameState, now: number): GameState {
+  const { turn } = state;
+  const left = turn.pausedLeft;
+  if (left === null || left === undefined) {
+    return { ...state, turn: { ...turn, deadline: turnDeadline(state, turn.playerId, now), pausedLeft: null } };
+  }
+  const full = now + left;
+  const connected = findPlayer(state, turn.playerId)?.connected ?? true;
+  const deadline = connected ? full : Math.min(full, now + state.config.disconnectedTurnTimeoutMs);
+  return {
+    ...state,
+    turn: { ...turn, deadline, restoreDeadline: deadline < full ? full : null, pausedLeft: null },
+  };
+}
 
 /**
  * Finishes the active player's turn. A turn with no buy and no sell is a pass; consecutive passes
