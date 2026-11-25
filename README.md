@@ -89,7 +89,8 @@ npm run typecheck
 
 A ★ marks pieces that belong to your own design. The **Design visibility** slider under your board
 sets how strongly the picture shows through the empty slots. The ring around the active player's
-avatar is the turn clock.
+avatar is the turn clock. The ☾/☀ button in the top-right corner switches between light and dark mode.
+It follows your system setting until you pick one, and remembers your choice on that device.
 
 ## Customising
 

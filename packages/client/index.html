@@ -7,6 +7,15 @@
     <meta name="description" content="Kalamkari — a jigsaw and auction board game for 2–4 players." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>Kalamkari</title>
+    <script>
+      // Apply the theme before first paint (no light flash in dark mode). ThemeToggle takes over after.
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('kalamkari.theme'); } catch (e) {}
+        if (t !== 'light' && t !== 'dark') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

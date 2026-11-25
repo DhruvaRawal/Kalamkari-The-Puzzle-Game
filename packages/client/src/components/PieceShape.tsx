@@ -75,12 +75,12 @@ export function PieceGlyph(p: PieceGlyphProps) {
       </clipPath>
       {p.faceDown || !p.designId ? (
         <g clip-path={`url(#c${clip})`}>
-          <rect x={0} y={0} width={S} height={S} fill="var(--madder)" />
+          <rect x={0} y={0} width={S} height={S} fill="var(--madder-fill)" />
           <rect x={8} y={8} width={S - 16} height={S - 16} fill="none" stroke="var(--turmeric)" stroke-width={3} />
           <circle cx={S / 2} cy={S / 2} r={22} fill="none" stroke="var(--turmeric)" stroke-width={3} />
           <circle cx={S / 2} cy={S / 2} r={8} fill="var(--turmeric)" />
           {p.faceDownLabel && (
-            <text x={S / 2} y={S - 14} text-anchor="middle" font-size={13} fill="var(--cream)" font-weight={700}>
+            <text x={S / 2} y={S - 14} text-anchor="middle" font-size={13} fill="#f4ead5" font-weight={700}>
               {p.faceDownLabel}
             </text>
           )}

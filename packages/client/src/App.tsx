@@ -1,4 +1,5 @@
 import { useEffect } from 'preact/hooks';
+import { ThemeToggle } from './components/ThemeToggle';
 import { GameScreen } from './features/game/GameScreen';
 import { Lobby, WaitingRoom } from './features/lobby/Lobby';
 import { app, connect, disconnect } from './state/session';
@@ -62,6 +63,7 @@ export function App() {
 
   return (
     <>
+      <ThemeToggle />
       <ConnectionBadge />
       {screen}
       <Toast />
