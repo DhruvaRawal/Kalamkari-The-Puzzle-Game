@@ -93,6 +93,9 @@ avatar is the turn clock.
 
 ## Customising
 
+> These are maintenance notes for the copyright holder. The [license](LICENSE) does not allow
+> anyone else to modify the game.
+
 ### Swap in or add a design image
 
 All designs are listed in `packages/shared/src/config/designs.manifest.ts`:
@@ -135,3 +138,13 @@ docs/             RULES, ARCHITECTURE
 
 The same reducer and validators run on the server, in local mode, and in the UI's enable/disable
 checks. See [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## License
+
+Copyright (c) 2026 Dhruva Rawal. All rights reserved.
+
+Kalamkari is **not open source**. You may download it and play it for personal, non-commercial
+fun. You may not change, share, redistribute or sell it, or use it or the game's design for any
+commercial purpose, without written permission. The software is provided as is, without any
+warranty. See [LICENSE](LICENSE) for the full terms. For permission requests, contact
+rawaldhruva2004@gmail.com.
