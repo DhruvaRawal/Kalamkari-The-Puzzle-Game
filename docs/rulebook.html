@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kalamkari Rulebook</title>
+<meta name="description" content="How to play Kalamkari, a jigsaw and auction board game for 2–4 players." />
+<style>
+  :root {
+    --paper: #fbf5e6;
+    --cream: #f4ead5;
+    --surface: #fffdf6;
+    --ink: #2b1d14;
+    --ink-soft: #5c4636;
+    --line: #c9b48f;
+    --line-soft: #e6d8bb;
+    --madder: #8b2e1f;
+    --madder-text: #8b2e1f;
+    --indigo: #1f3a5f;
+    --indigo-text: #1f3a5f;
+    --turmeric: #d9a441;
+    --leaf: #3f5f31;
+    --leaf-text: #3f5f31;
+    --on-fill: #fff;
+    --note-bg: #fbe7bd;
+    --shadow: 0 2px 0 rgba(43, 29, 20, 0.06), 0 8px 24px rgba(43, 29, 20, 0.08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #17120f;
+      --cream: #2a211b;
+      --surface: #211a15;
+      --ink: #f1e6d0;
+      --ink-soft: #c8b79b;
+      --line: #5e4c3a;
+      --line-soft: #3d3128;
+      --madder: #9c3523;
+      --madder-text: #f2b8a2;
+      --indigo: #24406a;
+      --indigo-text: #9dbbe6;
+      --turmeric: #e3b458;
+      --leaf: #3d6a2f;
+      --leaf-text: #93c47a;
+      --note-bg: #33291f;
+      --shadow: 0 2px 0 rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.6 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; color: var(--madder-text); line-height: 1.2; }
+  h2 { font-size: 1.75rem; margin: 0 0 0.75rem; }
+  h3 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+  p, ul, ol { margin: 0 0 0.9rem; }
+  li + li { margin-top: 0.3rem; }
+  a { color: var(--indigo-text); }
+  strong { color: var(--ink); }
+  .muted { color: var(--ink-soft); }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+  /* Cover */
+  .cover {
+    text-align: center;
+    padding: 3.5rem 16px 2.5rem;
+    border-bottom: 3px double var(--line);
+    background:
+      radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--turmeric) 22%, transparent), transparent 60%);
+  }
+  .cover svg { width: 96px; height: 96px; }
+  .cover h1 { font-size: clamp(2.6rem, 8vw, 4rem); margin: 0.5rem 0 0.25rem; letter-spacing: 0.02em; }
+  .cover .tagline { font-size: 1.15rem; color: var(--ink-soft); margin: 0 auto 1.25rem; max-width: 34rem; }
+  .facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+  .facts li {
+    margin: 0;
+    padding: 0.3rem 0.85rem;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.95rem;
+  }
+
+  /* Contents */
+  nav.toc {
+    margin: 2rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+  }
+  nav.toc h2 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+  nav.toc ol { columns: 2 14rem; column-gap: 2rem; margin: 0; padding-left: 1.4rem; }
+  nav.toc li { margin: 0 0 0.25rem; break-inside: avoid; }
+
+  section { padding: 2rem 0 1rem; border-top: 1px dashed var(--line); }
+  section:first-of-type { border-top: 0; }
+  .num { color: var(--turmeric); margin-right: 0.4rem; }
+
+  /* Cards and callouts */
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+    margin: 0 0 1rem;
+  }
+  .note {
+    background: var(--note-bg);
+    border-left: 5px solid var(--turmeric);
+    border-radius: 0 12px 12px 0;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+  }
+  .note > :last-child { margin-bottom: 0; }
+  .note strong:first-child { color: var(--madder-text); }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .action h3 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; }
+  .pill {
+    display: inline-block;
+    font: 600 0.8rem/1 'Segoe UI', system-ui, sans-serif;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: var(--madder);
+    color: var(--on-fill);
+    vertical-align: middle;
+  }
+  .pill--indigo { background: var(--indigo); }
+  .pill--leaf { background: var(--leaf); }
+
+  /* Tables */
+  .table-scroll { overflow-x: auto; margin: 0 0 1rem; }
+  table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius: 12px; overflow: hidden; }
+  th, td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--line-soft); text-align: left; vertical-align: top; }
+  th { background: var(--cream); font-family: Georgia, serif; color: var(--madder-text); font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  td.n, th.n { text-align: center; font-variant-numeric: tabular-nums; }
+
+  /* Turn flow */
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0.5rem; margin: 1rem 0; list-style: none; padding: 0; }
+  .flow li {
+    flex: 1 1 150px;
+    margin: 0;
+    padding: 0.75rem;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    position: relative;
+    font-size: 0.95rem;
+  }
+  .flow li b { display: block; font-family: Georgia, serif; color: var(--madder-text); font-size: 1.05rem; }
+
+  /* Piece-class diagram */
+  .diagram { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; margin: 1rem 0; }
+  .diagram svg { width: 220px; max-width: 100%; height: auto; flex: none; }
+  .diagram .cell-corner { fill: var(--madder); }
+  .diagram .cell-edge { fill: var(--turmeric); }
+  .diagram .cell-centre { fill: var(--indigo); }
+  .diagram .cell-label { font: 700 13px 'Segoe UI', system-ui, sans-serif; text-anchor: middle; dominant-baseline: central; }
+  .diagram .on-dark { fill: #fff; }
+  .diagram .on-light { fill: #2b1d14; }
+  .legend { list-style: none; padding: 0; margin: 0; }
+  .legend li { display: flex; align-items: center; gap: 0.6rem; }
+  .swatch { width: 18px; height: 18px; border-radius: 4px; flex: none; }
+
+  kbd {
+    font: 600 0.85em ui-monospace, Consolas, monospace;
+    border: 1.5px solid var(--line);
+    border-bottom-width: 3px;
+    border-radius: 6px;
+    padding: 0.05rem 0.4rem;
+    background: var(--surface);
+  }
+
+  /* FAQ */
+  details { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 0.6rem 1rem; margin: 0 0 0.6rem; }
+  summary { cursor: pointer; font-weight: 600; }
+  details[open] summary { margin-bottom: 0.4rem; }
+  details > :last-child { margin-bottom: 0; }
+
+  /* Quick reference */
+  .quickref { border: 3px double var(--madder); }
+  .quickref h2 { margin-top: 0; }
+  .quickref ul { padding-left: 1.2rem; }
+
+  footer { text-align: center; padding: 2rem 16px 3rem; color: var(--ink-soft); font-size: 0.9rem; border-top: 3px double var(--line); margin-top: 2rem; }
+
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    h2 { font-size: 1.45rem; }
+    .cover { padding-top: 2.25rem; }
+    .flow li { flex-basis: 100%; }
+    .diagram { justify-content: center; }
+  }
+
+  @media print {
+    :root { --paper: #fff; --surface: #fff; --shadow: none; }
+    body { font-size: 11pt; }
+    nav.toc { display: none; }
+    section { break-inside: avoid-page; }
+    .card, details, table { break-inside: avoid; }
+    details > * { display: block; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="var(--madder)" stroke-width="4" />
+    <circle cx="50" cy="50" r="38" fill="none" stroke="var(--turmeric)" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round" />
+    <g fill="var(--indigo)">
+      <path d="M50 22c6 9 6 19 0 28c-6-9-6-19 0-28Z" />
+      <path d="M50 78c6-9 6-19 0-28c-6 9-6 19 0 28Z" />
+      <path d="M22 50c9-6 19-6 28 0c-9 6-19 6-28 0Z" />
+      <path d="M78 50c-9-6-19-6-28 0c9 6 19 6 28 0Z" />
+    </g>
+    <circle cx="50" cy="50" r="7" fill="var(--turmeric)" />
+  </svg>
+  <h1>Kalamkari</h1>
+  <p class="tagline">Bid, barter and piece together your secret hand-painted design. The first player to complete it wins.</p>
+  <ul class="facts">
+    <li>2–4 players</li>
+    <li>16-piece designs</li>
+    <li>Pass &amp; play or online</li>
+  </ul>
+</header>
+
+<main class="wrap">
+
+  <nav class="toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#goal">The goal</a></li>
+      <li><a href="#components">What's in the game</a></li>
+      <li><a href="#setup">Setting up</a></li>
+      <li><a href="#turn">Your turn</a></li>
+      <li><a href="#auctions">Auctions</a></li>
+      <li><a href="#placing">Placing pieces</a></li>
+      <li><a href="#secrets">What stays secret</a></li>
+      <li><a href="#winning">Winning</a></li>
+      <li><a href="#timers">Timers</a></li>
+      <li><a href="#modes">Pass &amp; play and online</a></li>
+      <li><a href="#settings">Game settings</a></li>
+      <li><a href="#controls">Controls</a></li>
+      <li><a href="#faq">Questions and special cases</a></li>
+      <li><a href="#quickref">Quick reference</a></li>
+    </ol>
+  </nav>
+
+  <section id="goal">
+    <h2><span class="num">1</span>The goal</h2>
+    <p>
+      Every player is secretly given one hand-painted Kalamkari design, cut into a 16-piece jigsaw.
+      But the pieces are shuffled together, so your hand holds pieces of everyone's designs, and
+      some of yours are in other players' hands or with the Auction House.
+    </p>
+    <p>
+      Buy pieces, sell the ones you don't need, and bid for pieces at auction. <strong>Be the first to
+      fix all 16 pieces of your design into your board</strong> and you win.
+    </p>
+  </section>
+
+  <section id="components">
+    <h2><span class="num">2</span>What's in the game</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">Designs</h3>
+        <p>
+          Four designs: <em>Gaja</em> (Elephant), <em>Qila</em> (Castle), <em>Kamal</em> (Lotus) and
+          <em>Parvat</em> (Mountain). Only the players' designs are used, one per player.
+        </p>
+        <p>
+          Each is cut into the same 4×4 jigsaw: <strong>4 corners, 8 edges and 4 centres</strong>.
+        </p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Coins</h3>
+        <p>Each player starts with <strong>10 coins</strong>. The Auction House starts with <strong>10 coins</strong> of its own.</p>
+        <p>Coins are never created or destroyed. They only move between players and the Auction House.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">The Auction House</h3>
+        <p>
+          The bank. It holds the leftover pieces (the <strong>pool</strong>) and its own coins. It sells
+          you random pieces, buys pieces back from you, and runs the auctions.
+        </p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Your board</h3>
+        <p>
+          An empty 4×4 frame for your design. A faint outline of your picture shows through the empty
+          slots to help you find where pieces go.
+        </p>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <caption class="muted" style="caption-side:bottom; padding-top:0.4rem; text-align:left">Pieces and coins by number of players.</caption>
+        <thead>
+          <tr><th>Players</th><th class="n">Pieces in play</th><th class="n">Coins in play</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2</td><td class="n">32</td><td class="n">30</td></tr>
+          <tr><td>3</td><td class="n">48</td><td class="n">40</td></tr>
+          <tr><td>4</td><td class="n">64</td><td class="n">50</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="setup">
+    <h2><span class="num">3</span>Setting up</h2>
+    <p>The game does all of this for you:</p>
+    <ol>
+      <li>Each player is secretly given a <strong>different design</strong>. Only you know which one is yours.</li>
+      <li>All the pieces of the designs in play are shuffled together.</li>
+      <li>Each player is dealt <strong>10 random pieces</strong> and <strong>10 coins</strong>. Your hand can hold pieces of any design, including other players'.</li>
+      <li>The remaining pieces go to the Auction House as the pool.</li>
+      <li>A random player goes first. Play then goes <strong>clockwise</strong> (down the player list).</li>
+    </ol>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Players</th><th class="n">Dealt to each player</th><th class="n">Left in the pool</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2</td><td class="n">10</td><td class="n">12</td></tr>
+          <tr><td>3</td><td class="n">10</td><td class="n">18</td></tr>
+          <tr><td>4</td><td class="n">10</td><td class="n">24</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      <strong>Rotated pieces.</strong> By default pieces are dealt at a random rotation, so you'll need
+      to turn them the right way up before they fit. This can be switched off in the
+      <a href="#settings">game settings</a>.
+    </p>
+  </section>
+
+  <section id="turn">
+    <h2><span class="num">4</span>Your turn</h2>
+    <p>On your turn you may take each of these two actions <strong>once</strong>, in either order:</p>
+
+    <div class="grid2">
+      <div class="card action">
+        <h3><span class="pill pill--indigo">Buy</span> 1 coin</h3>
+        <p>
+          Pay 1 coin to the Auction House and draw a <strong>random piece</strong> from the pool.
+          Nobody else sees what you drew.
+        </p>
+      </div>
+      <div class="card action">
+        <h3><span class="pill">Sell</span> 1 or 2 coins</h3>
+        <p>
+          Choose one of your unfixed pieces. The Auction House pays you <strong>straight away</strong>,
+          then puts the piece up for <a href="#auctions">auction</a> face-down.
+        </p>
+      </div>
+    </div>
+
+    <p>When you're done, <strong>end your turn</strong>. If you used both Buy and Sell, your turn ends by itself.
+      If you end your turn without doing either, you <strong>pass</strong>.</p>
+
+    <h3>How a turn flows</h3>
+    <ol class="flow" aria-label="Turn order">
+      <li><b>Start</b>Your turn begins and your clock starts.</li>
+      <li><b>Buy and/or Sell</b>Once each, in either order. Selling opens an auction.</li>
+      <li><b>Auction</b>Your clock pauses. Other players bid for the piece you sold.</li>
+      <li><b>Back to you</b>If you haven't bought yet, the turn comes back so you can.</li>
+      <li><b>End turn</b>Play passes to the next player.</li>
+    </ol>
+
+    <h3 id="prices">What the Auction House pays</h3>
+    <p>The price depends on what kind of piece it is <em>in its own design</em>:</p>
+    <div class="diagram">
+      <svg viewBox="0 0 220 220" role="img" aria-labelledby="grid-title">
+        <title id="grid-title">A 4 by 4 design: the four corners are corner pieces, the twelve outer slots between them are edges, and the middle four are centres.</title>
+        <g id="cells"></g>
+      </svg>
+      <ul class="legend">
+        <li><span class="swatch" style="background:var(--madder)"></span><span><strong>Corner</strong> (4 per design): pays <strong>1 coin</strong></span></li>
+        <li><span class="swatch" style="background:var(--turmeric)"></span><span><strong>Edge</strong> (8 per design): pays <strong>2 coins</strong></span></li>
+        <li><span class="swatch" style="background:var(--indigo)"></span><span><strong>Centre</strong> (4 per design): pays <strong>2 coins</strong></span></li>
+      </ul>
+    </div>
+    <p class="note">
+      <strong>The Auction House must be able to pay.</strong> If it doesn't have enough coins for the
+      sale, you can't sell that piece. The game tells you why.
+    </p>
+  </section>
+
+  <section id="auctions">
+    <h2><span class="num">5</span>Auctions</h2>
+    <p>Every piece you sell goes straight to auction.</p>
+    <ul>
+      <li>Everyone sees that a piece is for sale, whether it's a corner, edge or centre, and what the seller was paid. <strong>Nobody sees which piece it is</strong>: it's sold face-down.</li>
+      <li><strong>Every player except the seller</strong> may bid.</li>
+      <li>Bidding is open: everyone sees each bid. The first bid is at least <strong>1 coin</strong>, and each bid must beat the last by at least 1 coin.</li>
+      <li>You can't bid more coins than you have.</li>
+      <li>The auction lasts <strong>15 seconds</strong>. After any bid, at least <strong>5 seconds</strong> remain, so others always get a chance to answer.</li>
+      <li>There are no ties. An equal bid isn't allowed, so the earlier bid stands.</li>
+    </ul>
+    <h3>When the clock runs out</h3>
+    <ul>
+      <li><strong>Someone bid:</strong> the highest bidder pays their bid to the Auction House and takes the piece into their hand.</li>
+      <li><strong>Nobody bid:</strong> the piece goes into the pool, where anyone may buy it later.</li>
+    </ul>
+    <p>
+      The turn then goes <strong>back to the seller</strong> if they haven't bought yet this turn. If they
+      already bought, the turn passes to the next player.
+    </p>
+    <p class="note">
+      <strong>Tip.</strong> The seller gets paid by the Auction House, not by the winning bidder. So
+      selling always earns you the fixed price, however much (or little) the piece goes for.
+    </p>
+  </section>
+
+  <section id="placing">
+    <h2><span class="num">6</span>Placing pieces</h2>
+    <p>
+      You can place pieces <strong>at any time</strong>: on your turn, on other players' turns, and
+      during auctions. You don't use up an action to place a piece.
+    </p>
+    <ul>
+      <li>Drag a piece from your hand onto your board. Rotate it first if it's the wrong way round.</li>
+      <li>A piece <strong>locks in</strong> only if it's <strong>from your design</strong>, in <strong>its correct slot</strong>, and <strong>the right way up</strong>.</li>
+      <li>If any of those is wrong, the piece goes back to your hand and the game tells you what was wrong: wrong design, wrong slot, or needs rotating. There's no penalty for trying.</li>
+      <li>Pieces from other players' designs <strong>never</strong> lock into your board. They're only useful for selling.</li>
+      <li>Once a piece is locked it is <strong>fixed</strong>: you can't move it or sell it.</li>
+    </ul>
+    <p>
+      A <strong>★</strong> marks the pieces in your hand that belong to your design, so you know which
+      ones to keep and which you can sell.
+    </p>
+  </section>
+
+  <section id="secrets">
+    <h2><span class="num">7</span>What stays secret</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Information</th><th>You</th><th>Other players</th></tr></thead>
+        <tbody>
+          <tr><td>Your design</td><td>Yes</td><td><strong>Never</strong>, not even at the end</td></tr>
+          <tr><td>Which pieces you hold or have placed</td><td>Yes</td><td>Never</td></tr>
+          <tr><td>The piece you just bought</td><td>Yes</td><td>No</td></tr>
+          <tr><td>The piece being auctioned</td><td colspan="2">Hidden from everyone except the seller. Its type (corner, edge or centre) is shown.</td></tr>
+          <tr><td>How many pieces you've fixed</td><td>Yes</td><td>Hidden by default; can be shown with a <a href="#settings">setting</a></td></tr>
+          <tr><td>Names, coins and bids</td><td colspan="2">Everyone sees these</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">
+      When fixed counts are hidden, other players see only how many pieces you own in total (in your
+      hand and on your board together), so placing a piece gives nothing away.
+    </p>
+  </section>
+
+  <section id="winning">
+    <h2><span class="num">8</span>Winning</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0"><span class="pill pill--leaf">Complete</span></h3>
+        <p>
+          The game ends <strong>the moment</strong> someone fixes the last of their 16 pieces. They win.
+        </p>
+        <p class="muted">If two players complete at exactly the same moment, the one with more coins wins.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0"><span class="pill pill--indigo">Stalemate</span></h3>
+        <p>
+          If the pool is empty and every player passes in a row, the game ends. The player with the
+          <strong>most fixed pieces</strong> wins. Players who tie share the win.
+        </p>
+        <p class="muted">Any Buy or Sell restarts the count.</p>
+      </div>
+    </div>
+    <p>The end screen shows everyone's coins and fixed count, but never anyone's design.</p>
+  </section>
+
+  <section id="timers">
+    <h2><span class="num">9</span>Timers</h2>
+    <ul>
+      <li><strong>Turn clock:</strong> each turn lasts <strong>90 seconds</strong> by default (60 s, 2 min or 5 min can be chosen instead). When it runs out, your turn ends automatically. If you hadn't bought or sold, that counts as a pass.</li>
+      <li>The ring around the active player's picture is their clock. It drains as time runs out, turns orange in the last third, and red in the last 10 seconds.</li>
+      <li><strong>Selling pauses your clock.</strong> While your piece is at auction your clock stops. When the turn comes back to you, it carries on from where it stopped. It doesn't refill.</li>
+      <li><strong>Auction clock:</strong> 15 seconds, with at least 5 seconds left after any bid.</li>
+      <li><strong>Disconnecting (online):</strong> if you lose your connection on your turn, your clock drops to 15 seconds so the table isn't held up. Reconnect in time and your original clock comes back.</li>
+    </ul>
+  </section>
+
+  <section id="modes">
+    <h2><span class="num">10</span>Pass &amp; play and online</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3 style="margin-top:0">Pass &amp; play</h3>
+        <p>One device, shared around the table.</p>
+        <ul>
+          <li>Between turns a <strong>privacy curtain</strong> covers the screen and asks the next player to take the device. Everyone else looks away.</li>
+          <li>Only the player holding the device can see and arrange their pieces.</li>
+          <li>During an auction, each eligible player has their own row of bid buttons. Bids are public, so there's no curtain for bidding.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Online</h3>
+        <p>Each player on their own device.</p>
+        <ul>
+          <li>One player creates a room and shares its <strong>4-letter code</strong>. Others join with the code.</li>
+          <li>Everyone can arrange and place their own pieces at any time, even on other players' turns.</li>
+          <li>If you reload the page or drop out, you rejoin your seat automatically.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="settings">
+    <h2><span class="num">11</span>Game settings</h2>
+    <p>The host can change these in the lobby before the game starts:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Setting</th><th>Default</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>Show how many pieces each player has fixed</td><td>Off</td><td>Lets everyone see each player's fixed count. Never which pieces or which design.</td></tr>
+          <tr><td>Deal pieces rotated</td><td>On</td><td>Pieces arrive turned at random; you rotate them before they fit.</td></tr>
+          <tr><td>Turn timer</td><td>90 seconds</td><td>60 s, 90 s, 2 min or 5 min per turn.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">
+      Each player can also set, just for themselves: <strong>Design visibility</strong> (how strongly
+      your picture shows through the empty slots) and <strong>light or dark mode</strong> (the ☾/☀
+      button in the top-right corner). Neither affects the game.
+    </p>
+  </section>
+
+  <section id="controls">
+    <h2><span class="num">12</span>Controls</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>To…</th><th>Mouse or touch</th><th>Keyboard</th></tr></thead>
+        <tbody>
+          <tr><td>Select a piece</td><td>Tap it</td><td><kbd>Tab</kbd> to it</td></tr>
+          <tr><td>Rotate</td><td>Double-tap, or ↺ ↻ in the tray toolbar</td><td><kbd>R</kbd> / <kbd>Shift</kbd>+<kbd>R</kbd></td></tr>
+          <tr><td>Place</td><td>Drag it onto your board</td><td><kbd>Enter</kbd>, arrow keys to pick a slot, <kbd>Enter</kbd> (<kbd>Esc</kbd> cancels)</td></tr>
+          <tr><td>Rearrange your hand</td><td>Drag within the tray</td><td>Arrow keys (hold <kbd>Shift</kbd> for bigger steps)</td></tr>
+          <tr><td>Sell</td><td><strong>Sell</strong>, tap a piece, then confirm</td><td><strong>Sell</strong>, then <kbd>Enter</kbd> on a piece</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2><span class="num">13</span>Questions and special cases</h2>
+    <details>
+      <summary>I have no coins. What can I do?</summary>
+      <p>You can't buy or bid, but you can still sell a piece (which earns you coins) or pass.</p>
+    </details>
+    <details>
+      <summary>The pool is empty.</summary>
+      <p>Buy is disabled. You can still sell. If every player passes in a row while the pool is empty, the game ends in a <a href="#winning">stalemate</a>.</p>
+    </details>
+    <details>
+      <summary>All my pieces are fixed, but I haven't won yet.</summary>
+      <p>Fixed pieces can't be sold, so Sell is disabled. Buy pieces or win them at auction to finish your design.</p>
+    </details>
+    <details>
+      <summary>The Auction House can't pay for my piece.</summary>
+      <p>Then you can't sell it. Corners cost the Auction House less (1 coin), so you may still be able to sell a corner. Coins flow back to it whenever someone buys or wins an auction.</p>
+    </details>
+    <details>
+      <summary>Can I buy back the piece I just sold?</summary>
+      <p>Not at its auction: the seller can't bid. If nobody bids, it goes into the pool, and you might draw it again later by chance.</p>
+    </details>
+    <details>
+      <summary>Why would I sell a piece of my own design?</summary>
+      <p>You usually wouldn't. The ★ marks your design's pieces in your hand. Sell pieces of other designs instead: they're worth coins to you, and someone else may need them.</p>
+    </details>
+    <details>
+      <summary>Can I place pieces while waiting for my turn?</summary>
+      <p>Yes, online. In pass &amp; play, only the player holding the device can arrange their pieces, so place yours on your own turn.</p>
+    </details>
+  </section>
+
+  <section id="quickref">
+    <div class="card quickref">
+      <h2>Quick reference</h2>
+      <div class="grid2">
+        <div>
+          <h3>On your turn (each once)</h3>
+          <ul>
+            <li><strong>Buy:</strong> pay 1 coin, draw a random piece.</li>
+            <li><strong>Sell:</strong> get 1 (corner) or 2 (edge, centre) coins; the piece goes to auction.</li>
+            <li>Neither? That's a pass.</li>
+          </ul>
+          <h3>Auctions</h3>
+          <ul>
+            <li>Face-down. The seller can't bid.</li>
+            <li>Bids start at 1, beat the last by 1.</li>
+            <li>15 s, at least 5 s after each bid.</li>
+            <li>Winner pays the Auction House. No bids: piece to the pool.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Any time</h3>
+          <ul>
+            <li>Rotate, rearrange and place your pieces.</li>
+            <li>A piece locks only in its own slot of your design, the right way up.</li>
+            <li>Fixed pieces can't move or be sold.</li>
+          </ul>
+          <h3>Winning</h3>
+          <ul>
+            <li>First to fix all 16 pieces wins.</li>
+            <li>Empty pool + everyone passes in a row: most fixed pieces wins.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Kalamkari · Copyright © 2026 Dhruva Rawal. All rights reserved.
+</footer>
+
+<script>
+  // Draws the 4×4 piece-class diagram (kept in script so the markup above stays short).
+  (function () {
+    var g = document.getElementById('cells');
+    var ns = 'http://www.w3.org/2000/svg';
+    var size = 50, gap = 4, pad = 6;
+    for (var r = 0; r < 4; r++) {
+      for (var c = 0; c < 4; c++) {
+        var edgeR = r === 0 || r === 3, edgeC = c === 0 || c === 3;
+        var kind = edgeR && edgeC ? 'corner' : edgeR || edgeC ? 'edge' : 'centre';
+        var x = pad + c * (size + gap), y = pad + r * (size + gap);
+        var rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', x); rect.setAttribute('y', y);
+        rect.setAttribute('width', size); rect.setAttribute('height', size);
+        rect.setAttribute('rx', 7);
+        rect.setAttribute('class', 'cell-' + kind);
+        g.appendChild(rect);
+        var t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', x + size / 2); t.setAttribute('y', y + size / 2);
+        t.setAttribute('class', 'cell-label ' + (kind === 'edge' ? 'on-light' : 'on-dark'));
+        t.textContent = kind === 'corner' ? '1🪙' : '2🪙';
+        g.appendChild(t);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
