@@ -28,9 +28,9 @@ class Client {
   send(msg: object) {
     this.ws.send(JSON.stringify(msg));
   }
-  next<T extends ServerMessage['t']>(t: T, pred: (m: Extract<ServerMessage, { t: T }>) => boolean = () => true) {
+  next<T extends ServerMessage['t']>(t: T, pred: (m: Extract<ServerMessage, { t: T }>) => boolean = () => true, ms = 3000) {
     return new Promise<Extract<ServerMessage, { t: T }>>((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error(`timeout waiting for ${t}`)), 3000);
+      const timer = setTimeout(() => reject(new Error(`timeout waiting for ${t}`)), ms);
       this.waiters.push({
         pred: (m) => m.t === t && pred(m as Extract<ServerMessage, { t: T }>),
         resolve: (m) => {
@@ -161,4 +161,57 @@ describe('rooms', () => {
     a.close();
     b.close();
   });
+
+  it('lets the host add bots, set their level and play against them', async () => {
+    const a = new Client();
+    const b = new Client();
+    await Promise.all([a.ready, b.ready]);
+    const welcome = a.next('welcome');
+    a.send({ t: 'create', name: 'Asha' });
+    const wa = await welcome;
+
+    const added = a.next('lobby', (m) => m.lobby.players.length === 2);
+    a.send({ t: 'addBot' });
+    const bot = (await added).lobby.players[1];
+    expect(bot.name).toMatch(/^BOT [A-Z][a-z]+$/);
+    expect(bot).toMatchObject({ bot: 'medium', connected: true });
+
+    const hard = a.next('lobby', (m) => m.lobby.players[1]?.bot === 'hard');
+    a.send({ t: 'botLevel', id: bot.id, level: 'hard' });
+    await hard;
+
+    // Only the host manages bots; people can't pose as one.
+    const joined = b.next('welcome');
+    b.send({ t: 'join', code: wa.code, name: 'bot Bala' });
+    await joined;
+    const named = await a.next('lobby', (m) => m.lobby.players.length === 3);
+    expect(named.lobby.players[2].name).toBe('Bala');
+    const notHost = b.next('error');
+    b.send({ t: 'addBot' });
+    expect((await notHost).code).toBe('NOT_HOST');
+    const left = a.next('lobby', (m) => m.lobby.players.length === 2);
+    b.send({ t: 'leave' });
+    await left;
+
+    const removed = a.next('lobby', (m) => m.lobby.players.length === 1);
+    a.send({ t: 'removeBot', id: bot.id });
+    await removed;
+    const again = a.next('lobby', (m) => m.lobby.players.length === 2);
+    a.send({ t: 'addBot' });
+    const botId = (await again).lobby.players[1].id;
+
+    const started = a.next('state');
+    a.send({ t: 'start' });
+    let view = (await started).view;
+    if (view.turn.playerId === wa.playerId) {
+      const passed = a.next('state', (m) => m.view.turn.playerId === botId);
+      a.send({ t: 'action', action: { type: 'END_TURN' } });
+      view = (await passed).view;
+    }
+    // The bot takes its turn by itself and hands it back.
+    const back = await a.next('state', (m) => m.view.turn.playerId === wa.playerId && m.view.turn.number > view.turn.number, 15_000);
+    expect(back.view.log.some((e) => 'playerId' in e && e.playerId === botId && e.kind !== 'turn')).toBe(true);
+    a.close();
+    b.close();
+  }, 20_000);
 });

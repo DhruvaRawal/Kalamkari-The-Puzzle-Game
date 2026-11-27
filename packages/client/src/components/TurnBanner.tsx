@@ -1,5 +1,6 @@
 import { ERROR_MESSAGES, playerName, type AvailableActions, type PlayerView } from '@kalamkari/shared';
 import { formatClock } from '../utils/format';
+import { Coin } from './Coin';
 
 export interface TurnBannerProps {
   view: PlayerView;
@@ -51,7 +52,7 @@ export function TurnBanner({ view, now, actions, sellMode, onBuy, onSell, onEndT
       {actions && mine && (
         <div class="turn-actions">
           <button class="btn btn--primary" onClick={onBuy} disabled={!!actions.buy} title={why(actions.buy) ?? `Pay ${view.config.buyPrice} coin for a random piece`}>
-            Buy · {view.config.buyPrice}🪙
+            Buy · <Coin amount={view.config.buyPrice} label="coin" />
           </button>
           <button class={`btn${sellMode ? ' is-active' : ''}`} onClick={onSell} disabled={!!actions.sell} aria-pressed={sellMode} title={why(actions.sell) ?? 'Sell one of your pieces'}>
             {sellMode ? 'Cancel sell' : 'Sell'}

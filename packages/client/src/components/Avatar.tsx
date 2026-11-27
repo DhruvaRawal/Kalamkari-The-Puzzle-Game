@@ -93,11 +93,28 @@ const MOTIFS: { name: string; draw: Motif }[] = [
     ),
   },
   {
-    name: 'Moon',
+    name: 'Elephant',
     draw: (fg, ac) => (
       <>
-        <path d="M58 20 A31 31 0 1 0 74 72 A25 25 0 1 1 58 20 Z" fill={fg} />
-        <path d="M70 26 L73 34 L81 35 L75 40 L77 48 L70 44 L63 48 L65 40 L59 35 L67 34 Z" fill={ac} />
+        {/* Legs, body, head and trunk (facing left). */}
+        <rect x={40} y={58} width={8} height={18} rx={2} fill={fg} />
+        <rect x={52} y={60} width={8} height={16} rx={2} fill={fg} />
+        <rect x={64} y={60} width={8} height={16} rx={2} fill={fg} />
+        <rect x={74} y={58} width={8} height={18} rx={2} fill={fg} />
+        <ellipse cx={60} cy={50} rx={24} ry={16} fill={fg} />
+        <circle cx={34} cy={44} r={13} fill={fg} />
+        <path d="M24 48 C17 56 17 68 25 74" fill="none" stroke={fg} stroke-width={7} stroke-linecap="round" />
+        <path d="M83 48 Q90 54 87 62" fill="none" stroke={fg} stroke-width={2.5} stroke-linecap="round" />
+        {/* Ear, tusk, eye. */}
+        <path d="M38 36 C48 34 50 52 40 56 C36 50 35 42 38 36 Z" fill={ac} />
+        <path d="M27 55 Q32 60 37 57" fill="none" stroke={ac} stroke-width={2.5} stroke-linecap="round" />
+        <circle cx={29} cy={41} r={2} fill={ac} />
+        {/* Decorated saddle cloth with a fringe of dots. */}
+        <path d="M50 35 L72 35 L70 56 L52 56 Z" fill={ac} />
+        <path d="M54 41 L68 41 M55 47 L67 47" stroke={fg} stroke-width={2} stroke-linecap="round" />
+        {[53, 58, 63, 68].map((x) => (
+          <circle cx={x} cy={59} r={1.8} fill={ac} />
+        ))}
       </>
     ),
   },

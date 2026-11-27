@@ -1,5 +1,6 @@
 import {
   WS_PATH,
+  type BotLevel,
   type ClientAction,
   type ClientMessage,
   type GameSettings,
@@ -77,6 +78,15 @@ export class WebSocketTransport implements Transport {
   }
   updateSettings(settings: GameSettings) {
     this.send({ t: 'settings', settings });
+  }
+  addBot() {
+    this.send({ t: 'addBot' });
+  }
+  removeBot(id: PlayerId) {
+    this.send({ t: 'removeBot', id });
+  }
+  setBotLevel(id: PlayerId, level: BotLevel) {
+    this.send({ t: 'botLevel', id, level });
   }
 
   controllablePlayers(): PlayerId[] {

@@ -18,3 +18,4 @@ export { payoutFor, pieceClassOf } from './engine/rules/sell';
 export { piecesPerDesign, resolveCompletionWinners, resolveStalemateWinners } from './engine/rules/win';
 export * from './protocol/actions';
 export * from './protocol/messages';
+export * from './bot/bot';

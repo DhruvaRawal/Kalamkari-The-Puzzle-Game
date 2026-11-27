@@ -71,6 +71,17 @@ export function attachWebSockets(server: Server, rooms: RoomManager): WebSocketS
           const e = room.start(memberId);
           return e ? fail(e.code, e.message) : undefined;
         }
+        case 'addBot':
+        case 'removeBot':
+        case 'botLevel': {
+          const e =
+            msg.t === 'addBot'
+              ? room.addBot(memberId)
+              : msg.t === 'removeBot'
+                ? room.removeBot(memberId, msg.id)
+                : room.setBotLevel(memberId, msg.id, msg.level);
+          return e ? fail(e.code, e.message) : undefined;
+        }
         case 'leave':
           room.leave(memberId);
           room = null;

@@ -1,4 +1,4 @@
-import { defaultGameConfig, type GameSettings, type LobbyInfo } from '@kalamkari/shared';
+import { BOT_LEVEL_LABEL, BOT_LEVELS, defaultGameConfig, isBotLevel, type GameSettings, type LobbyInfo } from '@kalamkari/shared';
 import { useState } from 'preact/hooks';
 import { app, connect, disconnect, showToast } from '../../state/session';
 import { useStore } from '../../state/store';
@@ -149,6 +149,7 @@ export function WaitingRoom({ transport, lobby }: { transport: WebSocketTranspor
   }
   const isHost = transport.playerId === lobby.hostId;
   const canStart = lobby.players.length >= lobby.minPlayers;
+  const seatsLeft = lobby.maxPlayers - lobby.players.length;
   return (
     <div class="card lobby-card waiting">
       <h2>
@@ -157,14 +158,42 @@ export function WaitingRoom({ transport, lobby }: { transport: WebSocketTranspor
       <p class="muted">Share this code. {lobby.minPlayers}–{lobby.maxPlayers} players.</p>
       <ul class="lobby-players">
         {lobby.players.map((p) => (
-          <li>
-            {p.name}
-            {p.id === lobby.hostId && <span class="tag">host</span>}
-            {p.id === transport.playerId && <span class="tag">you</span>}
-            {!p.connected && <span class="tag tag--off">offline</span>}
+          <li class={p.bot ? 'is-bot' : undefined}>
+            <span class="lobby-player-name">
+              {p.name}
+              {p.id === lobby.hostId && <span class="tag">host</span>}
+              {p.id === transport.playerId && <span class="tag">you</span>}
+              {!p.connected && <span class="tag tag--off">offline</span>}
+              {p.bot && !isHost && <span class="tag">{BOT_LEVEL_LABEL[p.bot]}</span>}
+            </span>
+            {p.bot && isHost && (
+              <span class="bot-controls">
+                <select
+                  class="bot-level"
+                  value={p.bot}
+                  aria-label={`${p.name} difficulty`}
+                  onChange={(e) => {
+                    const level = (e.target as HTMLSelectElement).value;
+                    if (isBotLevel(level)) transport.setBotLevel(p.id, level);
+                  }}
+                >
+                  {BOT_LEVELS.map((l) => (
+                    <option value={l}>{BOT_LEVEL_LABEL[l]}</option>
+                  ))}
+                </select>
+                <button class="btn btn--small btn--ghost bot-remove" onClick={() => transport.removeBot(p.id)} aria-label={`Remove ${p.name}`} title="Remove bot">
+                  ✕
+                </button>
+              </span>
+            )}
           </li>
         ))}
       </ul>
+      {isHost && seatsLeft > 0 && (
+        <button class="btn add-bot" onClick={() => transport.addBot()}>
+          + Add bot
+        </button>
+      )}
       <SettingsFields value={lobby.settings} onChange={(s) => transport.updateSettings(s)} disabled={!isHost} />
       {isHost ? (
         <button class="btn btn--primary btn--large" disabled={!canStart} onClick={() => transport.start()}>

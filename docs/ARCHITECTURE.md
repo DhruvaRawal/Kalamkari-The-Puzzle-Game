@@ -101,6 +101,11 @@ The game UI only knows `Transport`. The lobby is the only place that chooses whi
 * `rooms/Room.ts`: lobby (seats, host, settings), then a `GameHost`. After every accepted action it
   sends **each socket its own projection**. It schedules one `setTimeout` for the host's next deadline
   (auction end or turn timeout) instead of polling.
+* **Bots** (`shared/src/bot/bot.ts`): `chooseBotAction(view, now, level)` returns one move at a
+  time from the bot's **own projection**, so a bot knows no more than a person in its seat. The room
+  seats bots as members without a socket and, while a game with bots is on, checks every 250 ms
+  whether a bot is due to move. Each bot pauses before reacting (Easy 2.5–4.5 s, Medium 1.5–3 s,
+  Hard 0.8–1.6 s) so people can follow along.
 * `transport/ws.ts`: parses and validates messages (`protocol/messages.ts`), applies rate limiting
   and message size limits, and maps sockets to players.
 * The server also serves `packages/client/dist` in production, so a single port handles everything.

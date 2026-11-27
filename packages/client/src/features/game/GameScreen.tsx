@@ -20,6 +20,7 @@ import { DragLayer } from '../placement/DragLayer';
 import { attemptPlace, rotatePiece } from '../placement/placement';
 import { GameLog } from './GameLog';
 import { GameOver } from './GameOver';
+import { OutbidAlert, useOutbidAlert } from '../auction/OutbidAlert';
 import { TurnAlert, useTurnAlert } from './TurnAlert';
 
 const OPACITY_KEY = 'kalamkari.designOpacity';
@@ -81,6 +82,7 @@ function GameTable({ view, bidders }: { view: PlayerView; bidders: string[] }) {
   const cell = useTrayCellSize();
   const [designOpacity, setDesignOpacity] = useDesignOpacity();
   const [turnAlert, dismissTurnAlert] = useTurnAlert(view);
+  const [outbid, dismissOutbid] = useOutbidAlert(view, bidders);
 
   const [selected, setSelected] = useState<PieceId | null>(null);
   const [sellMode, setSellMode] = useState(false);
@@ -188,7 +190,7 @@ function GameTable({ view, bidders }: { view: PlayerView; bidders: string[] }) {
   const total = view.layout.rows * view.layout.cols;
 
   return (
-    <div class={`game${turnAlert ? ' turn-fresh' : ''}`}>
+    <div class={`game${turnAlert ? ' turn-fresh' : ''}${outbid ? ' outbid-fresh' : ''}`}>
       <TurnBanner
         view={view}
         now={now}
@@ -332,6 +334,7 @@ function GameTable({ view, bidders }: { view: PlayerView; bidders: string[] }) {
       </p>
       <DragLayer view={view} />
       <TurnAlert alert={turnAlert} onDismiss={dismissTurnAlert} />
+      <OutbidAlert alert={outbid} onDismiss={dismissOutbid} />
 
       {sellPiece && (
         <SellConfirm

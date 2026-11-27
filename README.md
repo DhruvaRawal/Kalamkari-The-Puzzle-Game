@@ -6,7 +6,8 @@ pieces into your board at any time, even on other players' turns. The first play
 design wins.
 
 * **Pass & play**: one device, with a privacy curtain between turns.
-* **Online**: rooms with 4-letter join codes, per-player hidden information, and reconnect.
+* **Online**: rooms with 4-letter join codes, per-player hidden information, and reconnect. The host
+  can fill empty seats with bots (Easy, Medium or Hard).
 
 Docs: [Rules](docs/RULES.md) · [Architecture](docs/ARCHITECTURE.md)
 
@@ -41,7 +42,8 @@ npm run dev
 ```
 
 Choose **Online**, create a room, and share the code. Other devices on your network can open
-`http://<your-ip>:5173`.
+`http://<your-ip>:5173`. To play against the computer, press **+ Add bot** in the waiting room. Each
+bot gets a random "BOT" name and a difficulty dropdown; ✕ removes it.
 
 **Production** (one port serves both the built client and the WebSocket):
 
@@ -65,7 +67,7 @@ npm test
 npm run typecheck
 ```
 
-`npm test` runs 76 Vitest tests:
+`npm test` runs 84 Vitest tests:
 
 * `jigsaw.test.ts`: the edge matrix (interior seams are tab↔socket, borders are flat, 4 of each
   archetype), generated layouts, and `buildPiecePath`.
@@ -74,8 +76,10 @@ npm run typecheck
   from the brief, and a randomized fuzz test that checks coins and pieces are always conserved.
 * `placement.test.ts`: the single placement rule, locking, winning, and simultaneous completion.
 * `projection.test.ts`: no secret leaks to any viewer, and selectors match what the engine accepts.
-* `server.test.ts`: real WebSocket rooms, projection per socket, anti-spoofing, reconnect, and
-  server-side auction timers.
+* `bot.test.ts`: whole bot-only games finish with only legal moves, and hard beats medium beats
+  easy over 20 games each.
+* `server.test.ts`: real WebSocket rooms, projection per socket, anti-spoofing, reconnect,
+  server-side auction timers, and adding and playing against bots.
 
 ## Controls
 
@@ -89,7 +93,7 @@ npm run typecheck
 
 A ★ marks pieces that belong to your own design. The **Design visibility** slider under your board
 sets how strongly the picture shows through the empty slots. The ring around the active player's
-avatar is the turn clock. The ☾/☀ button in the top-right corner switches between light and dark mode.
+avatar is the turn clock. If someone beats your top bid, an **Outbid!** pop-up tells you. The ☾/☀ button in the top-right corner switches between light and dark mode.
 It follows your system setting until you pick one, and remembers your choice on that device.
 
 ## Customising

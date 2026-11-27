@@ -1,3 +1,4 @@
+import { isBotLevel, type BotLevel } from '../bot/bot';
 import type { GameSettings } from '../config/gameConfig';
 import type { PlayerId, PlayerView } from '../model/types';
 import type { PlayerAction } from './actions';
@@ -10,6 +11,8 @@ export interface LobbyPlayer {
   id: PlayerId;
   name: string;
   connected: boolean;
+  /** Set for computer players: their difficulty. */
+  bot?: BotLevel;
 }
 
 export interface LobbyInfo {
@@ -27,6 +30,9 @@ export type ClientMessage =
   | { t: 'join'; code: string; name: string }
   | { t: 'resume'; code: string; token: string }
   | { t: 'settings'; settings: GameSettings }
+  | { t: 'addBot' }
+  | { t: 'removeBot'; id: PlayerId }
+  | { t: 'botLevel'; id: PlayerId; level: BotLevel }
   | { t: 'start' }
   | { t: 'leave' }
   | { t: 'action'; action: PlayerAction; reqId?: number }
@@ -60,6 +66,11 @@ export function parseClientMessage(raw: string): ClientMessage | null {
       return s(m.code, 8) && s(m.token, 128) ? (m as ClientMessage) : null;
     case 'settings':
       return typeof m.settings === 'object' && m.settings !== null ? (m as ClientMessage) : null;
+    case 'removeBot':
+      return s(m.id, 16) ? { t: 'removeBot', id: m.id as string } : null;
+    case 'botLevel':
+      return s(m.id, 16) && isBotLevel(m.level) ? { t: 'botLevel', id: m.id as string, level: m.level } : null;
+    case 'addBot':
     case 'start':
     case 'leave':
     case 'ping':

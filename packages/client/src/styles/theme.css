@@ -153,7 +153,9 @@ h2 { font-size: 1.25rem; margin: 0 0 0.5rem; }
 .tag--turn { border-color: var(--madder); color: var(--madder); }
 .tag--bid { border-color: var(--leaf); color: var(--leaf); }
 .tag--off { border-style: dashed; }
-.coin { display: inline-flex; align-items: center; gap: 0.2em; font-weight: 700; white-space: nowrap; }
+/* The number sets the baseline (so a coin lines up with the words around it); the image is centred on it. */
+.coin { display: inline-flex; align-items: baseline; gap: 0.2em; font-weight: 700; white-space: nowrap; }
+.coin-icon { width: 1.5em; height: 1.5em; margin-block: -0.25em; align-self: center; flex: none; display: block; object-fit: fill; clip-path: ellipse(46% 46% at 49.4% 49.2%); user-select: none; }
 .coin--large { font-size: 1.4rem; }
 
 /* ---------------- Lobby ---------------- */
@@ -187,6 +189,13 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 .room-code { font-family: ui-monospace, Consolas, monospace; letter-spacing: 0.2em; background: var(--cream); padding: 0.1rem 0.5rem; border-radius: 8px; border: 2px dashed var(--madder); }
 .lobby-players { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
 .lobby-players li { padding: 0.5rem 0.75rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.lobby-players li { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; min-height: 48px; }
+.lobby-players li.is-bot { border-style: dashed; }
+.bot-controls { display: inline-flex; align-items: center; gap: 0.4rem; }
+.bot-level { min-height: 36px; padding: 0.2rem 0.5rem; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; }
+.bot-level:focus { border-color: var(--indigo); }
+.bot-remove { min-width: 36px; padding: 0.25rem 0.5rem; }
+.add-bot { justify-self: start; border-style: dashed; }
 .rules-summary summary { cursor: pointer; font-weight: 700; color: var(--madder-dark); }
 .rules-summary ul { margin: 0.5rem 0 0; padding-left: 1.2rem; }
 
@@ -264,7 +273,7 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 .player-name { display: flex; align-items: center; flex-wrap: wrap; gap: 0.15rem 0; font-size: 1.15rem; }
 .player-name .tag { font-size: 0.78rem; }
 .player.is-turn .tag--turn { background: var(--madder-fill); color: var(--on-fill); border-color: var(--madder-fill); }
-.player-stats { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; font-size: 1rem; margin-top: 0.2rem; }
+.player-stats { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 1rem; font-size: 1rem; margin-top: 0.2rem; }
 @media (max-width: 1199px) {
   .player-list { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 }
@@ -283,7 +292,7 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 
 /* Auction house */
 .auction-house.has-auction { border-color: var(--leaf); box-shadow: 0 0 0 3px rgba(63, 95, 49, 0.25), var(--shadow); }
-.bank-stats { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+.bank-stats { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 1rem; font-weight: 600; margin-bottom: 0.4rem; }
 .auction { display: flex; gap: 0.8rem; align-items: flex-start; }
 .auction-piece { flex: none; animation: float 2.4s ease-in-out infinite; }
 .auction-info { flex: 1; min-width: 0; }
@@ -296,7 +305,7 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 .timer-text { position: relative; display: block; text-align: center; font-weight: 700; line-height: 26px; color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); font-variant-numeric: tabular-nums; }
 .high-bid { margin: 0; }
 .bid-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; padding-top: 0.35rem; border-top: 1px dashed var(--line); }
-.bid-row-name { font-weight: 700; min-width: 7rem; display: inline-flex; gap: 0.4rem; }
+.bid-row-name { font-weight: 700; min-width: 7rem; display: inline-flex; align-items: baseline; gap: 0.4rem; }
 .bid-custom { display: inline-flex; gap: 0.3rem; }
 .bid-custom input { width: 5.5rem; }
 
@@ -334,6 +343,11 @@ legend { font-weight: 700; padding: 0 0.3rem; }
 /* While the alert shows, the usable action buttons pulse. */
 .turn-fresh .turn-actions .btn:not(:disabled) { animation: pulse 0.9s ease-in-out 3; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(217, 164, 65, 0.65); } }
+/* "Outbid!" pop-up: indigo instead of madder, lower down so the auction stays in view; the bid buttons pulse. */
+.outbid-alert { padding-top: 30vh; }
+.outbid-alert .turn-alert-card { background: var(--indigo-fill); outline-color: var(--indigo-fill); animation: alert-in 0.35s cubic-bezier(0.2, 1.4, 0.4, 1), alert-out 0.4s ease-in 2.8s forwards; }
+.outbid-alert .turn-alert-card strong { font-size: 1.7rem; }
+.outbid-fresh .btn--bid:not(:disabled) { animation: pulse 0.9s ease-in-out 3; }
 .slot path { fill: transparent; stroke: var(--ink-soft); stroke-width: 1.6; stroke-dasharray: 5 4; filter: drop-shadow(0 0 1.5px var(--halo)); }
 .slot.is-hover path { fill: rgba(217, 164, 65, 0.35); stroke: var(--madder); stroke-width: 3; stroke-dasharray: none; }
 .slot.is-cursor path { fill: rgba(31, 95, 191, 0.18); stroke: var(--focus); stroke-width: 4; stroke-dasharray: none; }
